@@ -30,5 +30,10 @@ pub enum TokenType {
     RBRACE,
 
     FUNCTION,
-    LET    
+    LET,
+    TRUE,
+    FALSE ,
+    IF,
+    ELSE,
+    RETURN    
 }
