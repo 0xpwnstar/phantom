@@ -14,6 +14,8 @@ pub enum TokenType {
     INT,
 
     EQUAL,
+    NOTEQUAL,
+    NOT,
 
     ASSIGN,
     PLUS,
