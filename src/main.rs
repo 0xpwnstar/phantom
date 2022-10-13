@@ -4,7 +4,7 @@ pub mod lexer;
 pub mod token;
 pub mod repl;
 
-fn main() {
+fn main() -> std::io::Result<()>{
     println!("Hello! This is phantom programming language!");
-    repl::start(io::stdin());
+    return repl::start(io::stdin(), io::stdout())
 }

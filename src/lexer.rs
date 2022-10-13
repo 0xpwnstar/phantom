@@ -131,6 +131,14 @@ impl<'a> Iterator for Lexer<'a>{
                     );
                 }
 
+                "," => {
+                    self.read_position += 1;
+                    return Some(Token{
+                        lexeme: &self.input[self.position..self.read_position],
+                        token: crate::token::TokenType::COMMA}
+                    );
+                }
+
                 "(" => {
                     self.read_position += 1;
                     return Some(Token{
