@@ -15,35 +15,86 @@ impl<'a> Iterator for Lexer<'a>{
 
         if self.position >= self.input.len() {
             return None
+        // }else if self.position == self.input.len(){
+        //     self.read_position += 1;
+        //     return Some(
+        //         Token { 
+        //             lexeme: &self.input[self.position-1..], 
+        //             token: crate::token::TokenType::EOF
+        //         }
+        //     )
         }else if self.input[self.read_position..self.read_position+1].chars().all(|c| {c.is_alphabetic()}) {
             //when we have input as letter `x` we could have a letter ahead of x
             //check possible cases and return the word as Ident, function ....
             loop {
-                if self.read_position+1 ==self.input.len(){
-                    self.read_position += 1; 
+                if self.read_position == self.input.len() {
+                    self.read_position += 1;
                     return Some(
-                        Token { lexeme: &self.input[self.position..], token: crate::token::TokenType::EOF })
+                        Token { 
+                            lexeme: &self.input[self.position..], 
+                            token: crate::token::TokenType::IDENT
+                        }
+                    )
                 }
                 let i = &self.input[self.read_position..self.read_position+1];
                 if i.chars().all(|c| {c.is_alphabetic()}) {
                     self.read_position += 1;
                 }else {
-                    break
+                    return Some(
+                        Token { 
+                            lexeme: &self.input[self.position..self.read_position], 
+                            token: crate::token::TokenType::IDENT
+                        }
+                    )
                 }
     
             }
+        }else if self.read_position+1 ==self.input.len(){
+            self.read_position += 1; 
             return Some(
-                Token { 
-                    lexeme: &self.input[self.position..self.read_position], 
-                    token: crate::token::TokenType::IDENT
-                }
-            )            
+                Token { lexeme: &self.input[self.position..], token: crate::token::TokenType::EOF })
         }
+
+
         if self.read_position < self.input.len(){
             let m = &self.input[self.position..self.read_position+1];
+            if m.parse::<f64>().is_ok() {
+                loop {
+                    if self.read_position == self.input.len() {
+                        self.read_position += 1;
+                        return Some(
+                            Token { 
+                                lexeme: &self.input[self.position..], 
+                                token: crate::token::TokenType::INT
+                            }
+                        )
+                    }
+                    let i = &self.input[self.read_position..self.read_position+1];
+                    if i.parse::<f64>().is_ok() {
+                        self.read_position += 1;
+                    }else {
+                        return Some(
+                            Token { 
+                                lexeme: &self.input[self.position..self.read_position], 
+                                token: crate::token::TokenType::INT
+                            }
+                        )
+                    }
+        
+                } 
+
+            }
             match m {
 
                 //case =
+                ";" => {
+                    self.read_position += 1;
+                    return Some(Token{
+                        lexeme: &self.input[self.position..self.read_position],
+                        token: crate::token::TokenType::SEMICOLON}
+                    );
+
+                }
                 "=" => {
                     if  &self.input[self.read_position..self.read_position+2] == "=="{
                         self.read_position += 2;
@@ -145,7 +196,7 @@ mod tests {
 
         #[test]
         fn lexer() {
-            let mut l = Lexer{input:" ddv = sdsds {}()+-   !    ==",position:3,read_position:0};
+            let mut l = Lexer{input:" ddv = 5 sdsds {}()+-   !    ==",position:3,read_position:0};
             print!("{:?}",l.next());
             print!("{:?}",l.next());
             print!("{:?}",l.next());
