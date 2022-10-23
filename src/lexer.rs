@@ -49,10 +49,6 @@ impl<'a> Iterator for Lexer<'a>{
                 }
     
             }
-        }else if self.read_position+1 ==self.input.len(){
-            self.read_position += 1; 
-            return Some(
-                Token { lexeme: &self.input[self.position..], token: crate::token::TokenType::EOF })
         }
 
 
